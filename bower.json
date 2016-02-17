@@ -1,0 +1,29 @@
+{
+  "name": "pzl-ics",
+  "main": "pzl-ics",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Puzzlepart/pzl-ics",
+  "contributors": [
+    "Tarjei Ormestøyl <tarjeieo@puzzlepart.com>"
+  ],
+  "description": "A browser friendly .ics/.vcs file generator written entirely in javascript. Based on https://github.com/nwcell/ics.js",
+  "keywords": [
+    "ics",
+    "iCal",
+    "iCalendar"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demo"
+  ],
+  "dependencies": {
+    "moment": "~2.11.1",
+    "Blob.js": "eligrey/Blob.js",
+    "FileSaver": "*"
+  }
+}
