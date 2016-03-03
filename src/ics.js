@@ -112,22 +112,20 @@ var ics = function() {
             var calendar = calendarStart + SEPARATOR + calendarEvents.join(SEPARATOR) + calendarEnd;
 
             var blob;
-            if (navigator.userAgent.indexOf('MSIE 10') === -1) { // chrome or firefox
+            try {
+                //Supported by Chrome, FF and IE>10
                 blob = new Blob([calendar]);
-            } else { // ie
-                try {
-                    return new Blob([calendar]);
-                } catch (e) {
-                    // The BlobBuilder API has been deprecated in favour of Blob, but older
-                    // browsers don't know about the Blob constructor
-                    // IE10 also supports BlobBuilder, but since the `Blob` constructor
-                    //  also works, there's no need to add `MSBlobBuilder`.
-                    var BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder;
-                    var bb = new BlobBuilder();
-                    bb.append(calendar);
-                    blob = bb.getBlob('text/x-vCalendar;charset=' + document.characterSet);
-                }
+            } catch (e) {
+                // The BlobBuilder API has been deprecated in favour of Blob, but older
+                // browsers don't know about the Blob constructor
+                // IE10 also supports BlobBuilder, but since the `Blob` constructor
+                //  also works, there's no need to add `MSBlobBuilder`.
+                var BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder;
+                var bb = new BlobBuilder();
+                bb.append(calendar);
+                blob = bb.getBlob('text/x-vCalendar;charset=' + document.characterSet);
             }
+
             saveAs(blob, filename + ext);
             return calendar;
         }
