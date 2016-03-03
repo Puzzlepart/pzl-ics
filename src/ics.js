@@ -52,7 +52,7 @@ var ics = function() {
             ) {
                 return null;
             };
-            
+
             var icsDateString = "";
             if (begin && begin._isAMomentObject && begin.isValid()) {
                 icsDateString = begin.format("YYYYMMDDTHHmmssZZ");
@@ -71,14 +71,14 @@ var ics = function() {
                     icsEndDateString = momentEndDate.format("YYYYMMDDTHHmmssZZ");
                 }
             }
-            
+
             var calendarEvent = [
                 'BEGIN:VEVENT',
                 'CLASS:PUBLIC'
             ];
             var organizerString = "ORGANIZER;CN=" + organizer.Name + " ;RSVP=TRUE:" + organizer.Email;
             calendarEvent.push(organizerString);
-            
+
             if (attendees.length > 0) {
                 attendees.forEach(function(attendee) {
                     if (attendee.Email != organizer.Email && attendee.Email != undefined && attendee.Email != 'null') {
@@ -86,7 +86,7 @@ var ics = function() {
                     }
                 }, this);
             }
-            
+
             calendarEvent.push('DESCRIPTION:' + description || "");
             calendarEvent.push('DTSTART;VALUE=DATE:' + icsDateString);
             calendarEvent.push('DTEND;VALUE=DATE:' + icsEndDateString);
@@ -94,10 +94,10 @@ var ics = function() {
             calendarEvent.push('SUMMARY;LANGUAGE=nb-no:' + subject || "Møte");
             calendarEvent.push('TRANSP:TRANSPARENT');
             calendarEvent.push('END:VEVENT');
-            
+
             var calendarEventString = "";
             for (var i = 0; i < calendarEvent.length; i++) {
-                if (calendarEvent[i] != "") calendarEventString += calendarEvent[i] + SEPARATOR;    
+                if (calendarEvent[i] != "") calendarEventString += calendarEvent[i] + SEPARATOR;
             }
             calendarEvents.push(calendarEventString);
             return calendarEvent;
@@ -115,9 +115,18 @@ var ics = function() {
             if (navigator.userAgent.indexOf('MSIE 10') === -1) { // chrome or firefox
                 blob = new Blob([calendar]);
             } else { // ie
-                var bb = new BlobBuilder();
-                bb.append(calendar);
-                blob = bb.getBlob('text/x-vCalendar;charset=' + document.characterSet);
+                try {
+                    return new Blob([calendar]);
+                } catch (e) {
+                    // The BlobBuilder API has been deprecated in favour of Blob, but older
+                    // browsers don't know about the Blob constructor
+                    // IE10 also supports BlobBuilder, but since the `Blob` constructor
+                    //  also works, there's no need to add `MSBlobBuilder`.
+                    var BlobBuilder = window.WebKitBlobBuilder || window.MozBlobBuilder;
+                    var bb = new BlobBuilder();
+                    bb.append(calendar);
+                    blob = bb.getBlob('text/x-vCalendar;charset=' + document.characterSet);
+                }
             }
             saveAs(blob, filename + ext);
             return calendar;
